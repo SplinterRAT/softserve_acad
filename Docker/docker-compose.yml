@@ -1,0 +1,36 @@
+services:
+  web:
+    build:
+        context: . 
+        dockerfile: php.Dockerfile
+#    ports:
+#        - "80:80"
+    init: true
+    depends_on:
+        - mysql
+    networks:
+        - mantisbt
+  mysql:
+    image: mysql:latest
+#    ports:
+#       - "3306:3306"
+    volumes:
+       - ./mantisdb:/var/lib/mysql
+#    build:
+#        context: .
+#        dockerfile: mysql.Dockerfile
+#    ports:
+#        - "3306:3306"
+#    volumes:
+#        - /var/lib/mysql:/var/lib/mysql
+    environment:
+         MYSQL_ROOT_PASSWORD: root
+         MYSQL_DATABASE: test_db
+         MYSQL_USER: test
+         MYSQL_PASSWORD: test_pass
+         MYSQL_ROOT_HOST: '%'     
+#    init: true
+    networks:
+        - mantisbt
+networks:
+   mantisbt:

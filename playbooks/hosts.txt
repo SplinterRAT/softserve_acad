@@ -1,0 +1,13 @@
+[haproxy_servers]
+haproxy_apache ansible_host=10.26.3.126 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=root
+haproxy_apache_reserve ansible_host=10.26.0.110 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=root
+haproxy_galera ansible_host=10.26.0.113 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=root
+
+[oms_servers]
+apache_oms1 ansible_host=10.26.0.218 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=root
+apache_oms2 ansible_host=10.26.0.141 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=root
+
+[oms_db]
+galera_db1 ansible_host=10.26.0.150 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=root
+galera_db2 ansible_host=10.26.0.152 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=root
+galera_db3 ansible_host=10.26.0.153 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=root

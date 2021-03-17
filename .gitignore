@@ -1,0 +1,9 @@
+terraform-aks-azure/terraform/aks-key.pub
+terraform-aks-azure/terraform/aks-key
+terraform-aks-azure/terraform/terraform.tfstate
+<<<<<<< HEAD
+terraform-aks-azure/terraform/.terraform
+=======
+>>>>>>> ad69fd0a4575ba0860573deb4bd0bae82f40e4f5
+terraform-aks-azure/terraform/terraform.tfstate.backup
+terraform_aws/variables.tf

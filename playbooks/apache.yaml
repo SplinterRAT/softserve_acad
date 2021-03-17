@@ -1,0 +1,84 @@
+---
+- hosts: apache
+  remote_user: root
+  tasks:
+   - name: add_ports to firewall
+     firewalld:
+        port: "8080/tcp"
+        permanent: true
+        state: enabled
+     notify: reload firewall
+   - name: Install java
+     yum:
+       name: java-1.8.0-openjdk-headless
+       state: present
+   - name: Install tar for wgrt
+     yum:
+        name: "{{item}}"
+        state: latest
+     when: ansible_distribution == 'CentOS'
+     loop:
+        - wget
+        - tar
+        - unzip
+   - name: Creates apache dir
+     file:
+        path: /usr/local/tomcat
+        state: directory
+   - name: download Apache sources
+     get_url:
+       url: https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.33/bin/apache-tomcat-9.0.33.tar.gz
+       dest: /usr/local/apache-tomcat-9.0.33.tar.gz
+   - name: Unarchive a file with extra options
+     unarchive:
+       src: /usr/local/apache-tomcat-9.0.33.tar.gz
+       dest: /usr/local/
+       remote_src: True
+   - name: Create symbolic link for Tomcat
+     file:
+       src: /usr/local/apache-tomcat-9.0.33
+       dest: /usr/local/tomcat
+       force: yes
+       state: link
+   - name: create tomcat group
+     group:
+         name: tomcat
+         state: present
+   - name: create Tomcat User
+     user:
+         name: tomcat
+         groups: tomcat
+   - name: service systemd
+     template:
+       src: /etc/ansible/templates/tomcat_service.j2
+       dest: /etc/systemd/system/tomcat.service
+     notify:
+        - reload daemon
+        - start tomcat
+   - name: Add apache users cfg
+     template:
+       src: /etc/ansible/templates/tomcat_users.j2
+       dest: /usr/local/tomcat/conf/tomcat-users.xml
+   - name: download latest OMS
+     shell: "{{item}}"
+     with_items:
+     - cd /usr/local/tomcat/webapps/ && { curl -sSL -X GET -G -k -u Developer:Developer1 "https://10.26.2.42:8443/service/rest/v1/search/assets" -d repository=maven-releases -d maven.groupId=com.softserveinc -d maven.artifactId=edu$
+   - name: creates directory OMS
+     shell: wget "usernamepassw@10.26.3.99:8080/manager/text/deploy?war=file:/usr/local/tomcat/webapps/OMS.war&path=/OMS" -O -
+  handlers:
+   - name: reload daemon
+     shell: systemctl daemon-reload
+   - name: enable tomcat
+     systemd:
+       name: tomcat
+       state: enabled
+   - name: start tomcat
+     systemd:
+      name: tomcat
+      state: started
+   - name: reload firewall
+     shell: firewall-cmd --reload
+   - name: restart tomcat
+     systemd:
+        name: tomcat
+        state: restarted
